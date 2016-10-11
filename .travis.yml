@@ -10,6 +10,12 @@ branches:
   only:
   - master
 
+deploy:
+  provider: script
+  script: scripts/deploy.sh
+  on:
+    tags: true
+
 script:
 - docker build -t damagehead/apache:development .
 - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then echo "this is a PR"; fi'
