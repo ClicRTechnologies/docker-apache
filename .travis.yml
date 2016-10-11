@@ -11,6 +11,8 @@ branches:
   - master
 
 deploy:
+  provider: script
+  script: scripts/deploy.sh
   on:
     tags: true
 
