@@ -8,7 +8,7 @@ dependencies:
 
 test:
   override:
-  - docker run -it --rm damagehead/apache nami list
+  - docker run -it damagehead/apache nami list
 
 deployment:
   hub:
