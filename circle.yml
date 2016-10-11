@@ -9,11 +9,12 @@ dependencies:
 
 test:
   override:
+  - docker info
   - docker run -it experimental/apache nami list
 
 deployment:
   hub:
-    branch: master
+    tag: /.*/
     commands:
       - printenv
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
