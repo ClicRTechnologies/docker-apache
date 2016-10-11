@@ -15,5 +15,6 @@ deployment:
   hub:
     branch: master
     commands:
+      - printenv
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push experimental/apache
