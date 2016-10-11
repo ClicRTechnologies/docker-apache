@@ -5,17 +5,27 @@ machine:
 dependencies:
   override:
   - docker info
-  - docker build --rm=false -t experimental/apache .
 
 test:
   override:
-  - docker info
-  - docker run -it experimental/apache nami list
+  - docker build --rm=false -t experimental/apache:development .
 
 deployment:
-  hub:
+  hub-development:
+    branch: master
+    commands:
+    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+    - docker build --rm=false -t experimental/apache:development .
+    - docker push experimental/apache:development
+  hub-tag:
     tag: /.*/
     commands:
-      - printenv
-      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker push experimental/apache
+    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+    - docker build --rm=false -t experimental/apache:$CIRCLE_TAG .
+    - docker push experimental/apache:$CIRCLE_TAG
+  hub-latest:
+    tag: /.*/
+    commands:
+    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+    - docker build --rm=false -t experimental/apache:latest .
+    - docker push experimental/apache:latest
