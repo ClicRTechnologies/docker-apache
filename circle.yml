@@ -2,13 +2,10 @@ machine:
   services:
   - docker
 
-dependencies:
-  override:
-  - docker info
-
 test:
   override:
-  - docker build --rm=false -t experimental/apache:development .
+  - docker info
+  - docker build --rm=false -t experimental/apache:$CIRCLE_BUILD_NUM .
 
 deployment:
   development:
