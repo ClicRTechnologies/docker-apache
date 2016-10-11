@@ -1,0 +1,11 @@
+machine:
+  services:
+    - docker
+dependencies:
+  cache_directories:
+    - "~/bitnami-docker-apache"
+  override:
+    - docker info
+    - if [[ -e ~/bitnami-docker-apache/image.tar ]]; then docker load --input ~/bitnami-docker-apache/image.tar; fi
+    - docker build -t bitnami/apache .
+    - mkdir -p ~/bitnami-docker-apache; docker save --output ~/bitnami-docker-apache/image.tar bitnami/apache
