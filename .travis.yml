@@ -1,0 +1,16 @@
+sudo: required
+
+# placeholder
+language: generic
+
+services:
+- docker
+
+branches:
+  only:
+  - master
+
+script:
+- docker build -t damagehead/apache:development .
+- 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then echo "this is a PR"; fi'
+- 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then echo "this is not a PR"; fi'
