@@ -1,16 +1,21 @@
 machine:
   services:
-    - docker
+  - docker
 
 dependencies:
-  cache_directories:
-    - "~/docker-bind"
   override:
-    - docker info
-    - if [[ -e ~/docker-bind/image.tar ]]; then docker load --input ~/docker-bind/image.tar; fi
-    - docker build -t sameersbn/bind .
-    - mkdir -p ~/docker-bind; docker save --output ~/docker-bind/image.tar sameersbn/bind
+  - docker info
+  - docker build --rm=false -t experimental/apache .
 
 test:
   override:
-    - docker run -it sameersbn/bind nami list
+  - docker info
+  - docker run -it experimental/apache nami list
+
+deployment:
+  hub:
+    tag: /.*/
+    commands:
+      - printenv
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker push experimental/apache
