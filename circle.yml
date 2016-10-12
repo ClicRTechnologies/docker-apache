@@ -5,7 +5,7 @@ machine:
 dependencies:
   override:
   - docker info
-  - docker pull experimental/apache || true
+  - docker pull experimental/apache:development || true
 
 test:
   override:
