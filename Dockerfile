@@ -7,7 +7,7 @@ ENV PATH=/opt/bitnami/apache/sbin:/opt/bitnami/apache/bin:/opt/bitnami/common/bi
 
 ENV BITNAMI_APP_NAME=apache \
     BITNAMI_APP_USER=daemon \
-    BITNAMI_IMAGE_VERSION=2.4.23-r6
+    BITNAMI_IMAGE_VERSION=2.4.23-r13
 
 COPY rootfs/ /
 ENTRYPOINT ["/app-entrypoint.sh"]
