@@ -2,8 +2,8 @@ machine:
   services:
   - docker
   environment:
-  - IMAGE_NAME=apache
-  - DOCKER_PROJECT=experimental
+    IMAGE_NAME: apache
+    DOCKER_PROJECT: experimental
 
 dependencies:
   override:
