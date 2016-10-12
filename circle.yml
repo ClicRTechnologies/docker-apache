@@ -5,6 +5,7 @@ machine:
 dependencies:
   override:
   - docker info
+  - gcloud version
   - docker pull experimental/apache:development || true
 
 test:
