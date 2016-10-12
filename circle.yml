@@ -1,28 +1,50 @@
 machine:
   services:
   - docker
+  environment:
+    IMAGE_NAME: apache
+    DOCKER_PROJECT: experimental
+    GCLOUD_PROJECT: bitnamigcetest2
 
 dependencies:
   override:
   - docker info
-  - docker pull experimental/apache:development || true
+  - gcloud version
+  - docker pull $DOCKER_PROJECT/$IMAGE_NAME:development || true
 
 test:
   override:
-  - docker build --rm=false -t experimental/apache:$CIRCLE_BUILD_NUM .
+  - docker build --rm=false -t $DOCKER_PROJECT/$IMAGE_NAME:$CIRCLE_BUILD_NUM .
 
 deployment:
   development:
     branch: master
     commands:
+    # push to docker.io
     - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-    - docker build --rm=false -t experimental/apache:development .
-    - docker push experimental/apache:development
+    - docker build --rm=false -t $DOCKER_PROJECT/$IMAGE_NAME:development .
+    - docker push $DOCKER_PROJECT/$IMAGE_NAME:development
+    # push to gcr.io
+    - echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
+    - gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+    - gcloud config set project $GCLOUD_PROJECT
+    - docker tag $DOCKER_PROJECT/$IMAGE_NAME:development gcr.io/$GCLOUD_PROJECT/$IMAGE_NAME:development
+    - gcloud docker -- push gcr.io/$GCLOUD_PROJECT/$IMAGE_NAME:development
+
   release:
     tag: /^[0-9]+(\.[0-9]+)*-r[0-9]*/
     commands:
+    # push to docker.io
     - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-    - docker build --rm=false -t experimental/apache:$CIRCLE_TAG .
-    - docker tag experimental/apache:$CIRCLE_TAG experimental/apache:latest
-    - docker push experimental/apache:$CIRCLE_TAG
-    - docker push experimental/apache:latest
+    - docker build --rm=false -t $DOCKER_PROJECT/$IMAGE_NAME:$CIRCLE_TAG .
+    - docker tag $DOCKER_PROJECT/$IMAGE_NAME:$CIRCLE_TAG $DOCKER_PROJECT/$IMAGE_NAME:latest
+    - docker push $DOCKER_PROJECT/$IMAGE_NAME:$CIRCLE_TAG
+    - docker push $DOCKER_PROJECT/$IMAGE_NAME:latest
+    # push to gcr.io
+    - echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
+    - gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+    - gcloud config set project $GCLOUD_PROJECT
+    - docker tag $DOCKER_PROJECT/$IMAGE_NAME:$CIRCLE_TAG gcr.io/$GCLOUD_PROJECT/$IMAGE_NAME:$CIRCLE_TAG
+    - docker tag $DOCKER_PROJECT/$IMAGE_NAME:$CIRCLE_TAG gcr.io/$GCLOUD_PROJECT/$IMAGE_NAME:latest
+    - gcloud docker -- push gcr.io/$GCLOUD_PROJECT/$IMAGE_NAME:$CIRCLE_TAG
+    - gcloud docker -- push gcr.io/$GCLOUD_PROJECT/$IMAGE_NAME:latest
