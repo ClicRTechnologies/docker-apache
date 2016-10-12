@@ -23,6 +23,6 @@ deployment:
     commands:
     - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
     - docker build --rm=false -t experimental/apache:$CIRCLE_TAG .
+    - docker tag experimental/apache:$CIRCLE_TAG experimental/apache:latest
     - docker push experimental/apache:$CIRCLE_TAG
-    - docker build --rm=false -t experimental/apache:latest .
     - docker push experimental/apache:latest
