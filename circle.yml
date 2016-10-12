@@ -13,6 +13,8 @@ dependencies:
 
 test:
   override:
+  - echo $DOCKER_PROJECT
+  - echo $IMAGE_NAME
   - docker build --rm=false -t $DOCKER_PROJECT/$IMAGE_NAME:$CIRCLE_BUILD_NUM .
 
 deployment:
