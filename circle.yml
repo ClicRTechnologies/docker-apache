@@ -4,7 +4,7 @@ machine:
   environment:
     IMAGE_NAME: apache
     DOCKER_PROJECT: experimental
-    GCLOUD_PROJECT: bitnamigcetest2
+    GCLOUD_PROJECT: sameersbn-146210
 
 dependencies:
   override:
